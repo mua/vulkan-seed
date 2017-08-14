@@ -26,9 +26,6 @@ endif()
 include_directories(${VULKAN_INCLUDE_DIR})
 add_subdirectory(external/Vulkan-WSIWindow/WSIWindow)
 
-# Compiler Settings
-add_definitions(-std=c++17)
-
 # Sources
 include_directories(
     ${PROJECT_SOURCE_DIR}/src

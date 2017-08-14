@@ -1,5 +1,6 @@
 # 🌋 Vulkan Seed 🌱
 
+[![CMake][cmake-img]][cmake-url]
 [![License][license-img]][license-url]
 ![Windows][windows-img]
 ![Linux][linux-img]
@@ -57,6 +58,8 @@ python data/shaders/compile.py
 
 - [WSIWindow](https://github.com/renelindsay/Vulkan-WSIWindow) - Cross platform windowing abstraction for Vulkan supported operating systems developed by LunarG.
 
+[cmake-img]: https://img.shields.io/badge/cmake-3.7-1f9948.svg?style=flat-square
+[cmake-url]: https://cmake.org/
 [license-img]: http://img.shields.io/:license-unlicense-blue.svg?style=flat-square
 [license-url]: http://unlicense.org/
 [windows-img]: http://img.shields.io/:supports-win-03b3fe.svg?style=flat-square
