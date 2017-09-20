@@ -20,14 +20,14 @@ Make sure to have the following installed:
 Then on a command line tool like [Cmder](http://cmder.net) or [Hyper](https://hyper.is), go to a folder such as your Documents and enter:
 
 ```bash
-# Clone Repo
+# 📋 Clone the Repo & ⬇️ Install Dependencies
 git clone git@github.com:alaingalvan/vulkan-seed.git --recursive
 cd vulkan-seed
 
-# Build Solution
+# ⚗️ Generate Solution
 cmake .
 
-# Compile Shaders
+# 🔨 Compile Your Shaders
 python data/shaders/compile.py
 ```
 
