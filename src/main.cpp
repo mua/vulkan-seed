@@ -1,3 +1,7 @@
+#define USE_SWAPCHAIN_EXTENSIONS
+#define GLM_FORCE_RADIANS
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
+
 #include "WSIWindow.h"
 #include "CDevices.h"
 #include "vulkan/vulkan.hpp"
@@ -8,6 +12,8 @@
 #include <exception>
 #include <algorithm>
 #include <fstream>
+
+
 
 class MyWindow : public WSIWindow {
 public:
@@ -22,20 +28,18 @@ private:
 	}
 	void OnCloseEvent() {
 		Close();
-	}
-
-	CInstance mInstance;
-	vk::SurfaceKHR mSurface;
+	};
 };
 
 int main(int argc, char *argv[]) {
 
 	CInstance cinstance;
 	MyWindow window;
-	window.SetTitle("Vulkan Seed");
-	window.SetWinSize(1280, 720);
+
+	// Convert between WSIWindow Types
 	VkSurfaceKHR csurface = window.GetSurface(cinstance);
-	vk::Instance instance = vk::Instance(cinstance.operator VkInstance);
+	VkInstance vinstance = cinstance;
+	vk::Instance instance = vk::Instance(vinstance);
 	vk::SurfaceKHR surface = vk::SurfaceKHR(csurface);
 
 
@@ -49,6 +53,11 @@ int main(int argc, char *argv[]) {
 	std::vector<vk::Viewport> viewports =
 	{
 		viewport
+	};
+
+	std::vector<vk::Rect2D> scissors =
+	{
+		renderArea
 	};
 
 #pragma region PhysicalDevices
@@ -299,6 +308,8 @@ int main(int argc, char *argv[]) {
 	std::vector<uint32_t> queueFamilyIndices;
 	queueFamilyIndices.push_back(graphicsFamilyIndex);
 
+	assert(gpu.getSurfaceSupportKHR(graphicsFamilyIndex, surface));
+
 	auto swapchain = device.createSwapchainKHR(
 		vk::SwapchainCreateInfoKHR(
 			vk::SwapchainCreateFlagsKHR(),
@@ -314,9 +325,7 @@ int main(int argc, char *argv[]) {
 			queueFamilyIndices.data(),
 			vk::SurfaceTransformFlagBitsKHR::eIdentity,
 			vk::CompositeAlphaFlagBitsKHR::eOpaque,
-			presentMode,
-			VK_TRUE,
-			vk::SwapchainKHR()
+			presentMode
 		)
 	);
 
@@ -593,7 +602,7 @@ int main(int argc, char *argv[]) {
 	uint32_t vertexBufferSize = static_cast<uint32_t>(vertexBuffer.size()) * sizeof(Vertex);
 
 	// Setup indices data
-	std::vector<uint32_t> indexBuffer = { 0, 1, 2, 0, 2, 3};
+	std::vector<uint32_t> indexBuffer = { 0, 1, 2 };
 	indices.count = static_cast<uint32_t>(indexBuffer.size());
 	uint32_t indexBufferSize = indices.count * sizeof(uint32_t);
 
@@ -917,8 +926,8 @@ int main(int argc, char *argv[]) {
 		return buffer;
 	};
 
-	auto vertShaderCode = readFile("../../data/shaders/shader.vert.spv");
-	auto fragShaderCode = readFile("../../data/shaders/shader.frag.spv");
+	auto vertShaderCode = readFile("data/shaders/shader.vert.spv");
+	auto fragShaderCode = readFile("data/shaders/shader.frag.spv");
 #pragma endregion
 
 #pragma region Pipeline
@@ -982,8 +991,8 @@ int main(int argc, char *argv[]) {
 		vk::PipelineViewportStateCreateFlagBits(),
 		viewports.size(),
 		viewports.data(),
-		0,
-		nullptr
+		scissors.size(),
+		scissors.data()
 	);
 
 	auto pr = vk::PipelineRasterizationStateCreateInfo(
@@ -1057,7 +1066,7 @@ int main(int argc, char *argv[]) {
 
 	auto graphicsPipeline = device.createGraphicsPipeline(pipelineCache,
 		vk::GraphicsPipelineCreateInfo(
-			vk::PipelineCreateFlags(vk::PipelineCreateFlagBits::eDerivative),
+			vk::PipelineCreateFlags(),
 			pipelineShaderStages.size(),
 			pipelineShaderStages.data(),
 			&pvi,
@@ -1071,6 +1080,8 @@ int main(int argc, char *argv[]) {
 			&pdy,
 			pipelineLayout,
 			renderpass,
+			0,
+			vk::Pipeline(),
 			0
 		)
 	);
@@ -1104,6 +1115,8 @@ int main(int argc, char *argv[]) {
 		);
 
 		commandBuffers[i].setViewport(0, viewports);
+
+		commandBuffers[i].setScissor(0, scissors);
 
 		// Bind Descriptor Sets, these are attribute/uniform "descriptions"
 		commandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, graphicsPipeline);
