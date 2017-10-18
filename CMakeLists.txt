@@ -25,6 +25,7 @@ else()
 endif()
 include_directories(${VULKAN_INCLUDE_DIR})
 add_subdirectory(external/Vulkan-WSIWindow/WSIWindow)
+include_directories(external/glm)
 
 # Sources
 include_directories(

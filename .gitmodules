@@ -1,3 +1,6 @@
 [submodule "external/Vulkan-WSIWindow"]
 	path = external/Vulkan-WSIWindow
 	url = git@github.com:renelindsay/Vulkan-WSIWindow.git
+[submodule "external/glm"]
+	path = external/glm
+	url = git@github.com:g-truc/glm.git
