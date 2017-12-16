@@ -14,4 +14,5 @@ for (root, dirs, files) in os.walk("."):
         file.endswith("geom") or
         file.endswith("frag") or
         file.endswith("comp")):
+          file = os.path.join(os.path.abspath(root), file)
           call([compiler_path, "-V", file, "-o", file + ".spv"])
